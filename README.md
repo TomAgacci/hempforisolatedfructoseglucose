@@ -1,5 +1,45 @@
 Licensed Under Creative Commons Attribution Non Commercial Open Source
 
+FLOWCHART: Bast + Salt PressureChem Conversion
+
+STEP 1: INPUT_FEED
+  - Receive bast mass (kg)
+  - Receive salt mass (kg)
+
+STEP 2: FRACTIONATE_BAST
+  - Compute cellulose_mass = bast_mass * cellulose_fraction
+  - Compute hemicellulose_mass = bast_mass * hemicellulose_fraction
+  - Compute lignin_mass = bast_mass * lignin_fraction
+
+STEP 3: CELLULOSE_TO_GLUCOSE
+  - Compute theoretical_glucose = cellulose_mass * (180 / 162)
+  - Compute actual_glucose = theoretical_glucose * cellulose_eff
+  - Compute cellulose_unconverted = cellulose_mass * (1 - cellulose_eff)
+
+STEP 4: HEMICELLULOSE_TO_XYLOSE
+  - Compute theoretical_xylose = hemicellulose_mass * (150 / 132)
+  - Compute actual_xylose = theoretical_xylose * hemicellulose_eff
+  - Compute hemicellulose_unconverted = hemicellulose_mass * (1 - hemicellulose_eff)
+
+STEP 5: RESIDUE_POOL
+  - residue_mass = lignin_mass
+                  + cellulose_unconverted
+                  + hemicellulose_unconverted
+
+STEP 6: SALT_PASS_THROUGH
+  - salt_out = salt_mass  (no reaction)
+
+STEP 7: MASS_BALANCE_OUTPUT
+  - Output glucose_mass = actual_glucose
+  - Output xylose_mass = actual_xylose
+  - Output residue_mass
+  - Output salt_out
+  - Compute total_sugars = glucose_mass + xylose_mass
+  - Compute total_out = total_sugars + residue_mass + salt_out
+
+END
+
+
 Simulated Operational Model to plugin
 Below is the complete step sequence your computational engine would follow when “processing” bast + salt.
 
