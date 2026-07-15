@@ -1,0 +1,48 @@
+FLOWCHART PressureChem_Bast_Salt {
+
+  NODE INPUT_FEED {
+    bast_mass = 1.0
+    salt_mass = 0.10
+  }
+
+  NODE FRACTIONATE_BAST {
+    cellulose_mass     = bast_mass * 0.70
+    hemicellulose_mass = bast_mass * 0.15
+    lignin_mass        = bast_mass * 0.15
+  }
+
+  NODE CELLULOSE_TO_GLUCOSE {
+    Y_glucose = 180/162
+    glucose_theoretical = cellulose_mass * Y_glucose
+    glucose_actual = glucose_theoretical * 0.85
+    cellulose_unconverted = cellulose_mass * (1 - 0.85)
+  }
+
+  NODE HEMI_TO_XYLOSE {
+    Y_xylose = 150/132
+    xylose_theoretical = hemicellulose_mass * Y_xylose
+    xylose_actual = xylose_theoretical * 0.70
+    hemi_unconverted = hemicellulose_mass * (1 - 0.70)
+  }
+
+  NODE RESIDUE_POOL {
+    residue_total = lignin_mass + cellulose_unconverted + hemi_unconverted
+  }
+
+  NODE SALT_PASS {
+    salt_out = salt_mass
+  }
+
+  NODE MASS_BALANCE {
+    total_sugars = glucose_actual + xylose_actual
+    total_output = total_sugars + residue_total + salt_out
+  }
+
+  EDGE INPUT_FEED -> FRACTIONATE_BAST
+  EDGE FRACTIONATE_BAST -> CELLULOSE_TO_GLUCOSE
+  EDGE FRACTIONATE_BAST -> HEMI_TO_XYLOSE
+  EDGE CELLULOSE_TO_GLUCOSE -> RESIDUE_POOL
+  EDGE HEMI_TO_XYLOSE -> RESIDUE_POOL
+  EDGE RESIDUE_POOL -> MASS_BALANCE
+  EDGE SALT_PASS -> MASS_BALANCE
+}
